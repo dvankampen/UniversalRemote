@@ -15,4 +15,4 @@ TBD
 
 ### Authors
 
-+ [@davevankampen](http://github.com/davevankampen)
++ [@dvankampen](http://github.com/dvankampen)

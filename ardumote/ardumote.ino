@@ -1,12 +1,7 @@
 /*
- * WebServerMultiPageHTMLProgmem sketch
+ * Ardumote sketch
  *
- * Respond to requests in the URL to change digital and analog output ports
- * show the number of ports changed and the value of the analog input pins.
- *
- * http://192.168.1.177/analog/   displays analog pin data
- * http://192.168.1.177/digital/  displays digital pin data
- * http://192.168.1.177/change/  allows changing digital pin data
+ * TODO: Write description
  *
  */
 
@@ -14,7 +9,7 @@
 #include <Ethernet.h>
 #include <EthernetUDP.h>
 
-#include <avr/pgmspace.h> // for progmem
+#include <avr/pgmspace.h> // for progmem, for LED MIME images
 #define P(name)   static const prog_uchar name[] PROGMEM  // declare a static string
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
