@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/AliceBlue" >
+
+    <TextView
+        android:id="@+id/selectDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="18dp"
+        android:text="@string/main_page_title"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/selectDevice"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/button_tv"
+            style="@style/AppTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/device_tv" />
+
+        <Button
+            android:id="@+id/button_receiver"
+            style="@style/AppTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/device_receiver" />
+
+        <Button
+            android:id="@+id/button_cable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/device_cable" />
+
+        <Button
+            android:id="@+id/button_ps3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/device_ps3" />
+    </LinearLayout>
+
+</RelativeLayout>
