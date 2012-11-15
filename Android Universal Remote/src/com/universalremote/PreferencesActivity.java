@@ -12,6 +12,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
 	public static final String KEY_PREF_IP = "pref_arduinoIP";
 	public static final String KEY_PREF_BT = "pref_bluetooth";
+	public static final String KEY_PREF_PORT = "pref_port";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,9 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 			//tell our calling activity that something changed!
 			setResult(Activity.RESULT_OK);
 		}else if (key.equals(KEY_PREF_BT)) {
+			//tell our calling activity that something changed!
+			setResult(Activity.RESULT_OK);
+		} else if (key.equals(KEY_PREF_PORT)) {
 			//tell our calling activity that something changed!
 			setResult(Activity.RESULT_OK);
 		}

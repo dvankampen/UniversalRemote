@@ -12,5 +12,6 @@
     <string name="ps3_bluetooth">PS3 Bluetooth control?</string>
     <string name="help">Help</string>
     <string name="title_preferences">Preferences Activity</string>
+    <string name="arduino_port">56000</string>
 
 </resources>

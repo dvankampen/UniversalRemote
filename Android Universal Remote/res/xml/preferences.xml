@@ -7,13 +7,19 @@
         <EditTextPreference
             android:defaultValue="192.168.1.10"
             android:key="pref_arduinoIP"
-            android:summary="test"
+            android:summary="192.168.1.10"
             android:title="@string/arduino_address" />
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_bluetooth"
             android:title="@string/ps3_bluetooth" />
+        
+        <EditTextPreference
+            android:defaultValue="56000"
+            android:key="pref_port"
+            android:summary="56000"
+            android:title="@string/arduino_port"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

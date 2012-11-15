@@ -176,6 +176,7 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f060000;
         public static final int arduino_address=0x7f060008;
+        public static final int arduino_port=0x7f06000c;
         public static final int device_cable=0x7f060006;
         public static final int device_ps3=0x7f060007;
         public static final int device_receiver=0x7f060005;
