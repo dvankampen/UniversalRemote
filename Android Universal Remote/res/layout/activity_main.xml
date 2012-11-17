@@ -15,6 +15,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -49,5 +50,14 @@
             android:layout_height="wrap_content"
             android:text="@string/device_ps3" />
     </LinearLayout>
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout1" >
+
+    </ListView>
 
 </RelativeLayout>
