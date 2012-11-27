@@ -11,12 +11,20 @@
 #include <Flash.h>
 #include <SD.h>
 #include <TinyWebServer.h>
+#include <IRremote.h>
 
 #include <avr/pgmspace.h> // for progmem, for LED MIME images
 #define P(name)   static const prog_uchar name[] PROGMEM  // declare a static string
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 byte ip[] =  { 192,168,1,9 };
+
+long tv_commands[] = {0xa90, 0xa50, 0x090, 0x890, 0x490, 0xc90};
+//32 bits for NEC
+long receiver_commands[] = {0x7E8154AB, 0x5EA158A7, 0x5EA1D827, 0x5EA1E21C, 0x5EA152AC, 0x5EA1B24C, 0x5EA10Af4,
+0x5EA1906E, 0x5EA16897, 0x5EA1A658, 0x5EA116E8};
+
+IRsend irsend;
 
 // pin 4 is the SPI select pin for the SDcard
 const int SD_CS = 4;
@@ -36,17 +44,6 @@ char buffer[MAX_PAGENAME_LEN+1]; // additional character for terminating null
 
 EthernetServer server(80);
 EthernetClient client;
-
-// The LED attached to PIN 22 on an Arduino board.
-const int LEDPIN = 22;
-
-// The initial state of the LED
-int ledState = LOW;
-
-void setLedEnabled(boolean state) {
-  ledState = state;
-  digitalWrite(LEDPIN, ledState);
-}
 
 boolean index_handler(TinyWebServer& web_server);
 
@@ -72,9 +69,12 @@ void send_file_name(TinyWebServer& web_server, const char* filename) {
 
 TinyWebServer::PathHandler handlers[] = {
   {"/upload/" "*", TinyWebServer::PUT, &TinyWebPutHandler::put_handler },
-  {"/tv/",TinyWebServer::GET, &tv_command_handler },
-  {"/receiver/",TinyWebServer::GET, &receiver_command_handler },
-  {"/cable/",TinyWebServer::GET, &cable_command_handler },
+  {"/tv_command/" "*",TinyWebServer::GET, &tv_command_handler },
+  {"/receiver_command/" "*",TinyWebServer::GET, &receiver_command_handler },
+  {"/cable_command/" "*",TinyWebServer::GET, &cable_command_handler },
+  {"/tv/",TinyWebServer::GET, &tv_page_handler },
+  {"/receiver/",TinyWebServer::GET, &receiver_page_handler },
+  {"/cable/",TinyWebServer::GET, &cable_page_handler },
   {"/", TinyWebServer::GET, &index_handler },
   {NULL},
 };
@@ -91,44 +91,63 @@ boolean file_handler(TinyWebServer& web_server) {
   return true;
 }
 
-boolean learner_handler(TinyWebServer& web_server) {}
-
 boolean tv_command_handler(TinyWebServer& web_server) {
-  send_file_name(web_server, "TV.HTM");
-  if (client.available()) {
-    char ch = (char)client.read();
-    if (ch == '0') {
-      setLedEnabled(false);
-    } else if (ch == '1') {
-      setLedEnabled(true);
-    }
+  char* char_id = web_server.get_file_from_path(web_server.get_path());
+  int cmd_id = atoi(char_id);
+  if (cmd_id < (sizeof(tv_commands)/sizeof(long))) {
+    Serial.print(F("sending tv command: "));
+    Serial.println(char_id);
+    Serial.print("Command code is: 0x");
+    Serial.println( tv_commands[cmd_id-1], HEX);
+    irsend.sendSony(tv_commands[cmd_id-1], 32);
   }
-}
-
-boolean cable_command_handler(TinyWebServer& web_server) {
-  send_file_name(web_server, "CABLE.HTM");
-  
-  Client& client = web_server.get_client();
-  if (client.available()) {
-    char ch = (char)client.read();
-    if (ch == '0') {
-      setLedEnabled(false);
-    } else if (ch == '1') {
-      setLedEnabled(true);
-    }
-  }
+  web_server.send_error_code(200);
+  web_server.send_content_type("text/plain");
+  web_server.end_headers();
+  return true;
 }
 
 boolean receiver_command_handler(TinyWebServer& web_server) {
-  send_file_name(web_server, "RECEIVER.HTM");
-  if (client.available()) {
-    char ch = (char)client.read();
-    if (ch == '0') {
-      setLedEnabled(false);
-    } else if (ch == '1') {
-      setLedEnabled(true);
-    }
+  char* char_id = web_server.get_file_from_path(web_server.get_path());
+  int cmd_id = atoi(char_id);
+  if (cmd_id < (sizeof(receiver_commands)/sizeof(long))) {
+    Serial.print(F("sending receiver command: "));
+    Serial.println(char_id);
+    Serial.print("Command code is: 0x");
+    Serial.println(receiver_commands[cmd_id-1], HEX);
+    irsend.sendNEC(receiver_commands[cmd_id-1], 32);
   }
+  web_server.send_error_code(200);
+  web_server.send_content_type("text/plain");
+  web_server.end_headers();
+  return true;
+}
+
+boolean cable_command_handler(TinyWebServer& web_server) {
+  char* char_id = web_server.get_file_from_path(web_server.get_path());
+  Serial.print(F("sending cable command: "));
+  Serial.println(char_id);
+  web_server.send_error_code(200);
+  web_server.send_content_type("text/plain");
+  web_server.end_headers();
+  return true;
+}
+
+boolean learner_handler(TinyWebServer& web_server) {}
+
+boolean tv_page_handler(TinyWebServer& web_server) {
+  send_file_name(web_server, "TV.HTM");
+  return true;
+}
+
+boolean cable_page_handler(TinyWebServer& web_server) {
+  send_file_name(web_server, "CABLE.HTM");
+  return true;
+}
+
+boolean receiver_page_handler(TinyWebServer& web_server) {
+  send_file_name(web_server, "RECEIVER.HTM");
+  return true;
 }
 
 boolean index_handler(TinyWebServer& web_server) {
@@ -249,6 +268,17 @@ void loop()
   packetSize = Udp.parsePacket();
   if (packetSize) {
     Udp.read(packetBuffer, packetSize);
+    
+    if (packetBuffer[0] == 'r') {
+      Serial.println("toggling receiver power");
+      irsend.sendNEC(receiver_commands[0], 32);
+    } else if (packetBuffer[0] == '+') {
+      Serial.println("increasing receiver volume");
+      irsend.sendNEC(receiver_commands[1], 32);
+    } else if (packetBuffer[0] == '-') {
+      Serial.println("decreasing receiver volume");
+      irsend.sendNEC(receiver_commands[2], 32);
+    }
     receivedCommands++;
   } // else, no packet received
 }

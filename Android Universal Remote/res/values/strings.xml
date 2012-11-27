@@ -13,5 +13,9 @@
     <string name="help">Help</string>
     <string name="title_preferences">Preferences Activity</string>
     <string name="arduino_port">56000</string>
+    <string name="power">Power</string>
+    <string name="vol_up">Volume Up</string>
+    <string name="vol_down">Volume Down</string>
+    <string name="title_receiver">Receiver Activity</string>
 
 </resources>

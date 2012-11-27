@@ -30,6 +30,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.universalremote.MainActivity" />
         </activity>
+        <activity            
+            android:name=".ReceiverActivity"
+            android:label="@string/title_receiver" >
+            
+        </activity>
     </application>
 
 </manifest>
